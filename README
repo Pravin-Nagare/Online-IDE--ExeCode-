@@ -1,0 +1,60 @@
+Project Title: Online IDE "ExeCode"
+
+==============================================
+Abstract:
+This project is being developed by taking into consideration the developers working in a team who have to frequently install and upgrade software. The aim is to provide an online repository for storing their code and to carry out tasks such as compilation, debugging and execution at server-side. This will help the developers to view, edit, compile, debug and execute their code anytime anywhere even if they are working in a team. Also we have integrated our project with Github for Version Controlling so that projects that are saved on the Github account gets downloaded on our server and the user can perform the above mentioned tasks on those repositories as well. The modifications that are made on these repositories are pushed back to the Github server.
+
+==============================================
+
+Dependencies 
+-----------------------------------------------
+ 
+You need to install the following things at the server-side,
+
+1. Tornado - I have attached tornado 2.1.1 folder please download it go through the Read me file of Tornado to install it.
+             For more information Refer http://www.tornadoweb.org/ 
+                  
+2. Python 2.6 or higher (It is already installed in Ubuntu most of the times)
+3. Git -        sudo apt-get install git-core
+4. MySQL - Please visit this site below where all the instructions are given for MySQL installation
+                  Note: During installation it will ask for password please set it "doit" and create a database of name "testdb" so that you don't  
+                  need to change it in code.               
+                  http: //www.zetcode.com/databases/mysqlpythontutorial/
+5. Lex: Please install lex : sudo apt-get install flex
+           Then execute the following commands:
+           lex repos.l
+           gcc lex.yy.c -o repoDown
+           lex uname.l
+           gcc lex.yy.c -o uname
+------------------------------------------------
+Database tables : -
+user table :
+create table user(user varchar(20) primary key, email varchar(30), pwd varchar(30), token varchar(40));
+
+project table:
+create table project(name varchar(30), descr varchar(100), owner varchar(20), primary key(name,owner));
+
+invitaions table:
+create table invitations(sender varchar(30), project varchar(30), receiver varchar(30), senton varchar(10), status varchar(10));
+
+------------------------------------------------
+How to run the server
+Run the following commands on the terminal. You will require two different Tabs to run these two commands.
+
+1. python run.py
+2. python main.py
+
+-------------------------------------------------
+Client-side
+
+Needs Google Chrome 13 (or higher version) or Safari as web sockets are not supported by other browsers.
+
+The work is still in progress. So many validations are yet to be done.
+1. Hence you need to create a new project before creating a new file.
+2. You will see the experts option and the chat option. These are not yet implemented. 
+
+(We are providing chat service so no need to open any other application if you have doubts and want to chat with your friends who is in your circle.
+Experts Algorithm - Basically a forum is provided in which the user can put any number of question. Any one is free to reply to the questions being asked.
+Based on the reply any user can either like it or dislike it. Based on the number of likes and dislike he/she receives he/she can become an expert.)
+
+--------------------------------------------------
