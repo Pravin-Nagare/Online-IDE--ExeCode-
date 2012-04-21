@@ -1,0 +1,5 @@
+<html>
+<body>
+	<input type="image" src = "{{ static_url('images/index.jpeg')}}" width="33px" height="30px"/>
+</body>
+</html>

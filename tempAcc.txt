@@ -1,0 +1,32 @@
+HTTP/1.1 200 OK
+Server: nginx/1.0.13
+Date: Mon, 26 Mar 2012 18:27:54 GMT
+Content-Type: application/xml; charset=utf-8
+Connection: close
+Status: 200 OK
+X-RateLimit-Limit: 60
+ETag: "2bca6b99581f99fe6e74dc9edc5454a3"
+X-Frame-Options: deny
+X-RateLimit-Remaining: 59
+X-Runtime: 14
+Content-Length: 698
+Cache-Control: private, max-age=0, must-revalidate
+
+<?xml version="1.0" encoding="UTF-8"?>
+<user>
+  <name>Pravin Nagare</name>
+  <company nil="true"></company>
+  <gravatar-id>1a4ec477f217b2a05b00d81564c1ebb5</gravatar-id>
+  <location nil="true"></location>
+  <created-at type="datetime">2011-07-14T05:15:55-07:00</created-at>
+  <blog nil="true"></blog>
+  <public-gist-count type="integer">0</public-gist-count>
+  <public-repo-count type="integer">2</public-repo-count>
+  <following-count type="integer">0</following-count>
+  <id type="integer">914905</id>
+  <permission nil="true"></permission>
+  <type>User</type>
+  <followers-count type="integer">1</followers-count>
+  <login>Pravin-Nagare</login>
+  <email>nagarepravin30@gmail.com</email>
+</user>

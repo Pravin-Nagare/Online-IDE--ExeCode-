@@ -1,0 +1,181 @@
+<html>
+<head>
+<script>
+	var isRegistered=false;
+	maxPic = 5;
+
+count = 1;
+function init()
+{
+	prev1 = new Image (50,25);
+	prev1.src = "previous.jpg";
+	prev2 = new Image (50,25);
+	prev2.src = "previous.jpg";
+
+	next1 = new Image (50,25);
+	next1.src = "next.jpg";
+	next2 = new Image (50,25);
+	next2.src = "next.jpg";
+
+
+	p1 = new Image (200,100);
+	p1.src = "git.jpg";
+	p1.title="Provides Git Integration for version Control"
+
+	p2 = new Image (200,100);
+	p2.src = "interactivity.jpg";
+	p2.title="Output is Highly Interactive"
+	
+	p3 = new Image (200,100);
+	p3.src = "websocket.jpg";
+	p3.title="Reliable and Real-time data through Web-Sockets"
+
+	p4 = new Image (200,100);
+	p4.src = "fast.jpg";
+	p4.title="Non-blocking response"
+
+	p5 = new Image (200,100);
+	p5.src = "draft.jpg";
+	p5.title="Reliabilty from restoring of deleted files"
+}
+function next() 
+{
+	count++;
+	if (count > maxPic) 
+	{
+	count = 1;
+	}
+	set();
+}
+function back()
+{
+	count--;
+	if (count == 0) 
+	{
+	count = maxPic;
+	}
+	set();
+}
+function set()
+{
+	eval("document.p.src=p" + count + ".src");
+	eval("document.p.title=p" + count + ".title");
+	document.getElementById('status').value=eval("p"+count+".title");
+}
+
+	function change(id)
+	{
+		document.getElementById(id).type="password";
+	}
+	function hide()
+	{
+		document.getElementById('registerForm').removeChild(document.getElementById('rEmail'));
+		document.getElementById('registerForm').removeChild(document.getElementById('register'));
+		document.getElementById('registerForm').removeChild(document.getElementById('cancel'));
+		document.getElementById('registerForm').removeChild(document.getElementById('username'));
+		document.getElementById('registerForm').removeChild(document.getElementById('register_pwd'));
+		document.getElementById('registerForm').removeChild(document.getElementById('register_cpwd'));
+		document.getElementById('registerForm').removeChild(document.getElementById('rEmail'));
+		document.getElementById('registerForm').removeChild(document.getElementById('line1'));
+		document.getElementById('registerForm').removeChild(document.getElementById('line2'));
+		document.getElementById('registerForm').removeChild(document.getElementById('line3'));
+		document.getElementById('registerForm').removeChild(document.getElementById('line4'));
+	}
+	function getRegValues()
+	{
+		window.status="Registered";
+		hide();
+	}
+	function registerForm()
+	{
+		if(!isRegistered)
+		{
+			hasRegistered=true;
+			var myElement = document.createElement('INPUT');
+			myElement.setAttribute('type','text');
+			myElement.setAttribute('value',"Your Git user-name");
+			myElement.setAttribute('id','username');
+			document.getElementById('registerForm').appendChild(myElement);
+
+			var myElement = document.createElement('BR');		
+			myElement.setAttribute('id','line1');
+			document.getElementById('registerForm').appendChild(myElement);
+
+			var myElement = document.createElement('INPUT');
+			myElement.setAttribute('type','text');
+			myElement.setAttribute('value',"Your Git Email-ID");
+			myElement.setAttribute('id','rEmail');
+			document.getElementById('registerForm').appendChild(myElement);
+
+			var myElement = document.createElement('BR');
+			myElement.setAttribute('id','line2');
+			document.getElementById('registerForm').appendChild(myElement);
+
+			var myElement = document.createElement('INPUT');
+			myElement.setAttribute('type','text');
+			myElement.setAttribute('value',"Password");
+			myElement.setAttribute('id','register_pwd');
+			myElement.setAttribute('onfocus',"change('register_pwd')");
+			document.getElementById('registerForm').appendChild(myElement);
+
+			var myElement = document.createElement('BR');		
+			myElement.setAttribute('id','line3');
+			document.getElementById('registerForm').appendChild(myElement);
+
+			var myElement = document.createElement('INPUT');
+			myElement.setAttribute('type','text');
+			myElement.setAttribute('value',"Confirm Password");
+			myElement.setAttribute('id','register_cpwd');
+			myElement.setAttribute('onfocus',"change('register_cpwd')");
+			document.getElementById('registerForm').appendChild(myElement);
+
+			var myElement = document.createElement('BR');		
+			myElement.setAttribute('id','line4');
+			document.getElementById('registerForm').appendChild(myElement);
+
+			var myElement = document.createElement('INPUT');
+			myElement.setAttribute('type','button');
+			myElement.setAttribute('value',"Register");
+			myElement.setAttribute('id','register');
+			myElement.setAttribute('onClick','getRegValues()');
+			document.getElementById('registerForm').appendChild(myElement);
+
+			var myElement = document.createElement('INPUT');
+			myElement.setAttribute('type','reset');
+			myElement.setAttribute('value',"Cancel");
+			myElement.setAttribute('id','cancel');
+			myElement.setAttribute('onClick','hide()');
+			document.getElementById('registerForm').appendChild(myElement);
+		}
+		else
+		{
+			isRegistered=false;
+			hide();
+		}
+	}
+</script>
+
+</head>
+<body onload="init()">
+	<div id="login" align="right">
+	<form name="login" method="post" align="right">
+		<br/>
+		<input type="text" name="uname" id="uname" value="Your User-name"/>
+		<input type="text" value="Your password" id="pwd" onfocus="change('pwd')"/>
+		<input type="submit" value="Login"/><br/>
+		<p onclick='registerForm()'>Register</p>
+	</form>
+	</div>
+	<div id="registerForm" align="right">
+	</div>
+		<center><table border=0><tr><td align=center width=300><font color=white face="Arial, Helvetica" size="+1">Features</font><br><br>
+<table border=0><tr>
+<td><img src="previous.jpg" onmouseover="back()" onclick="back()"  width="50" height="35" border="0" name="prev"></td>
+<td><fieldset>
+<img name=p src="git.jpg" title="Welcome to ExeCode" border=0 width="400" height="300"></legend><br>
+<b><input type="text" size="48" style="color:#0000FF" readonly="true" id="status" align="middle" value="Welcome to ExeCode"/></b></td>
+<td><img src="next.jpg" onmouseover="next()"  onclick="back()" width="50" height="35" border="0" name="nxt"></td>
+</tr></table><br>
+
+</body>
+</html>

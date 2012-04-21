@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script src="socket.io.js"></script>
+  <script>
+    $(function() {
+        var query = new io.connect('http://' + window.location.host);
+        var num = 0;
+
+        // Establish event handlers
+        query.on('disconnect', function() {
+            query.socket.reconnect();
+        });
+
+        // Query
+        query.on('response', function(data) {
+            $("#result").append("<div>" + data + "</div>");
+        });
+
+        $('#btn').click(function() {
+			alert("hello");
+            query.emit('query', num);
+
+            $('#currentNumber').text('Sent ' + num + '...');
+
+            num += 1;
+
+            return false;
+        });
+    });
+</script>
+</head>
+<body>
+<h3>Async!</h3>
+<div>
+  <form id="chatform">
+    <div id="currentNumber"></div>
+    <input id="btn" type="submit" />
+  </form>
+</div>
+<div id="result"></div>
+</body>
+</html>

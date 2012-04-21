@@ -1,0 +1,322 @@
+<html>
+<head>
+<style type="text/css"> 
+div.registerForm,p.flip
+{
+position:absolute;
+right:0px;
+width:405px;
+margin:10px;
+padding:2px;
+text-align:center;
+background:#e5eecc;
+border:solid 2px #c3c3c3;
+}
+div.registerForm,#editorWindow
+{
+height:130px;
+display:none;
+}
+body
+{
+	outline-style:groove;
+}
+#editor
+  {
+  	margin:1;
+  	position:absolute;
+  	top:270;
+  	bottom:150;
+  	left:170;
+  	right:130;
+  }
+
+</style>
+<script type="text/javascript" src="{{static_url('jquery.js')}}"></script>
+<script type="text/javascript">
+//web socket implementation
+var IP="ws://localhost:7777/"
+var editor;
+var filename="temp.c";
+var fileType="C";
+var ws=new WebSocket(IP+"register");
+		ws.onopen=function(){
+			console.log("connection opened!");	
+		};
+		ws.onmessage=function(evt){
+			setStatus(evt.data);
+		};
+		ws.onerror = function(e){
+			console.log("error ! = ");
+			console.log(e);
+		};
+	
+	var file=new WebSocket(IP+"noreg");
+	file.onopen=function(){
+		console.log("file connection opened!");	
+	};
+	file.onmessage=function(evt){
+		var status="";
+		response=evt.data.split('$&');
+		if(response[0]=="errors")
+		{
+			status="File compiled Successfully";
+			if(response[1].length)
+				$("#output").val(response[1]);
+			else
+				$("#output").val("File compiled Successfully...\n\n[0] errors");
+		}
+		if(response[0]=="output")
+		{
+			status="Executing...";
+			if(response[1].length)
+				$("#output").val(response[1]);
+			else
+				$("#output").val("No output");
+		}
+		if(evt.data=="enterInput")
+		{
+			//option,filename,Type,Param=message.split('$&')
+			document.getElementById("output").scrollTop = document.getElementById("output").scrollHeight;
+			var param=prompt("Enter Input");
+			var data="getParam$&"+filename+"$&"+fileType+"$&"+param;
+			file.send(data);
+		}
+		setStatus(status);
+	};
+	file.onerror = function(e){
+		console.log("error ! = ");
+		console.log(e);
+	};
+	
+
+$(document).ready(function(){
+
+//slide down
+  $(".flip").click(function(){
+    $(".registerForm").slideToggle("slow");
+  });
+  $("#showeditor").click(function(){
+      $("#features").slideToggle("fast");
+    $("#editorWindow").slideToggle("fast");
+  });
+  
+//register button and slide up
+$("#isgit").click(function(){
+	if($("#isgit").is(":checked")==true)
+  	{
+			$("#apikey").hide();
+			$("#apikey").val("");
+  		}
+  		else
+  		{
+  			$("#apikey").val("Github API Token");
+  			$("#apikey").show();
+  		}
+  	
+});
+
+  $("#register").click(function(){
+  	
+  	var data=$("#rname").val()+","+$("#remail").val()+","+$("#rpwd").val()+","+$("#apikey").val();
+  	setStatus("Working...");
+  	ws.send(data);
+  	$(".registerForm").slideUp("fast");
+  	});
+  	
+  	$("#btnCompile").click(function(){
+  		//option, user, project,Type, param=message.split("$&")
+  		var content=editor.getSession().getValue();
+  		alert(content);
+		var data="compile$&"+filename+"$&"+fileType+"$&"+content
+		file.send(data);
+		//file.send(data);  	
+  	});
+  	$("#btnExecute").click(function(){
+//option,filename,Type,Param=message.split('$&')
+  		var data="execute$&"+filename+"$&"+fileType+"$&"+""
+  		file.send(data);
+  	});
+  	
+  //cancel registration
+   $("#BCancel").click(function(){
+  	$(".registerForm").slideUp("fast");
+  	setStatus("Cancelling");
+  	});
+  
+  
+});
+function setStatus(val)
+{
+	document.getElementById('Status').innerHTML=val;
+}
+
+
+function setCookie()
+{
+var c_name="username";
+var value=document.getElementById("uname").value;
+var expiredays=365;
+var exdate=new Date();
+exdate.setDate(exdate.getDate()+expiredays);
+document.cookie=c_name+ "=" +escape(value)+
+((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
+}
+function showtip(imageInfo)
+{
+	var info;
+	switch(imageInfo)
+	{
+		case "github":
+			info="Your projects will be controlled for version using <b>Github</b>";
+			break;
+		case "interactivity":
+			info="Execution of any source code is <b>Interactive</b>.<u>Give your Input whenever it is needed</u>";
+			break;
+		case "debugging":
+			info="User friendly debugging support is provided only for <b>You</b>";
+			break;
+		case "collaboration":
+			info="Working in a team is <b>Now</b> very much easy";
+	}
+	document.getElementById("tooltip").innerHTML=info;
+}
+function adjustEditor(lang)
+{
+	if(lang.match(".c"))
+	{
+		var JavaScriptMode = ace.require("ace/mode/c_cpp").Mode;
+		fileType="C";
+		filename="temp.c";
+	}
+	else if(lang.match("pp"))
+	{
+		var JavaScriptMode = ace.require("ace/mode/c_cpp").Mode;
+		fileType="C++";		
+		filename="temp.cpp";
+	}
+	else if(lang.match("py"))
+	{
+		var JavaScriptMode = ace.require("ace/mode/python").Mode;
+		fileType="Python";
+		filename="temp.py";
+	}
+	else if(lang.match("va"))
+	{
+		var JavaScriptMode = ace.require("ace/mode/java").Mode;
+		fileType="Java";
+		filename="temp.java";
+	}
+	else if(lang.match("rb"))
+	{
+		var JavaScriptMode = ace.require("ace/mode/ruby").Mode;
+		fileType="Ruby";
+		filename="temp.rb";
+	}
+	editor.getSession().setMode(new JavaScriptMode());
+}
+
+</script>
+
+</head>
+
+<!--Embedding code editor-->
+
+
+<body>
+<script src="{{ static_url('src/ace-noconflict.js') }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url('src/theme-chrome-noconflict.js') }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url('src/mode-c_cpp-noconflict.js') }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url('src/mode-java-noconflict.js') }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url('src/mode-python-noconflict.js') }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{static_url('src/mode-ruby-noconflict.js') }}" type="text/javascript" charset="utf-8"></script>
+
+<script type="text/javascript">
+window.onload=function() {
+	//setEditor.call(this,"c_cpp");
+	document.getElementById("info").innerHTML="<b>9876 People hosting over 13289 projects and many more...</b>";
+	editor = ace.edit("editor");    
+    editor.setTheme("ace/theme/chrome");
+    
+    var JavaScriptMode = ace.require("ace/mode/c_cpp").Mode;
+	  editor.getSession().setMode(new JavaScriptMode());  
+};
+</script>
+		<img src="{{static_url('images/execode.jpg')}}" height="150" width="400" style="color:#b22222;position:absolute;left:40px;top:30px"/>
+		<p style="background:Orange;position:absolute;left:252px;top:103px;font-size:large"><b>Anytime.. </p>
+		<p style="background:Orange;position:absolute;left:252px;top:123px;font-size:large">Anywhere... </b></p>
+		<p id="showeditor" style="background:#e5eecc;border:solid 2px #c3c3c3; color:#b22222;position:absolute;left:40px;top:160px; width:395px;"align="center">Show/Hide Editor</p>
+
+		<!--try editor-->
+		
+		<div id="Status" align="center">Welcome To ExeCode</div>
+		<form name="login" method="post" action="/login" id="loginForm" style="border:2px">
+			<div id="login" align="right">
+				<br/>
+				<input type="text" name="uname" id="uname" value="Your User-name"/>
+				<input type="password" name="pwd" value="Your password" id="pwd" onfocus="change('pwd')"/>
+				<input type="submit" value="Login" id="BLogin" onclick="setCookie()"/><br/>
+				<input type="checkbox" name="isgit" id="isgit">Check this if you're not Git-user</input>
+				<p class="flip"">Register</p>
+	
+			</div>
+			<div class="registerForm" align="right">
+				<input type="text" id="rname" value="Git user-name"/><br/>
+				<input type="text" id="remail" value="Git Email-Id"/><br/>
+				<input type="password" id="rpwd" value="Git password"/><br/>
+				<input type="password" id=rcpwd" value="Confirm password"/><br/>
+				<input type="text" id="apikey" value="Github API Token"/>
+				<div class="button">
+					<input type="button" id="register" value="Register"/>
+					<input type="button" id="BCancel" value="Cancel"/>
+				</div>
+			</div>
+		<div id="editorWindow">
+				<div id="radiobutton" style="position:absolute;left:100px;top:290px">
+				<input type="radio" name = "lang" checked="true" onclick="adjustEditor('.c')">C</input><br>
+				<input type="radio" name = "lang" onclick="adjustEditor('pp')">C++</input><br>
+				<input type="radio" name = "lang" onclick="adjustEditor('va')">Java</input><br>
+				<input type="radio" name = "lang" onclick="adjustEditor('py')">Python</input><br>
+				<input type="radio" name = "lang" onclick="adjustEditor('rb')">Ruby</input><br><br/>
+				<input type="button" value="Compile" id="btnCompile"/><br/>
+				<input type="button" value="Execute" id="btnExecute"/>
+				</div>
+				<div style="border:2px">
+   	   			<div id="editor"></div>
+				<div style="position:absolute;left:180px;top:550px">
+					<textarea align="bottom" id="output" rows=5" cols="137" style="font-family:sans serif"> output </textarea>
+				</div>
+				</div>
+		</div>
+
+	<div id="features">
+	<table style="position:absolute;left:185px;top:350px">
+	<tr>
+		<td></td>
+	</tr>
+	<tr>
+		<td>
+			<div id="info" style="background:#00FFFF;border:solid 3px;height:30px;font-size:x-small;font: italic small-caps bold 12px arial">
+				
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<table border="2" cellspacing="1" style="background:orange">
+				<tr>
+					<td><img src="{{ static_url('images/githubintegration.jpg') }}" onmouseover="showtip('github')"/></td>
+					<td><img src="{{ static_url('images/interactivity.jpg') }}" onmouseover="showtip('interactivity')"/></td>
+					<td><img src="{{ static_url('images/debugging.jpg') }}" onmouseover="showtip('debugging')"/></td>
+					<td><img src="{{ static_url('images/collaboration.jpg') }}" onmouseover="showtip('collaboration')"/></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td><div id="tooltip" style="background:#e5eecc;border:solid 2px #c3c3c3; color:#b22222" align="center"></div></td>
+	</tr>
+	<table>
+	</div>
+</body>
+</html>
